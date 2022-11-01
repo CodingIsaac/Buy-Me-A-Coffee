@@ -1,0 +1,1 @@
+A simple Buy me a coffee smart contract.
