@@ -1,9 +1,11 @@
+import { utils } from 'ethers';
 import { ethers } from "hardhat";
-const hre = require("hardhat");
+import { any } from 'hardhat/internal/core/params/argumentTypes';
+import hre from "hardhat";
 
 async function getBalance(address: any) {
-  const balance = await hre.ethers .provider.getBalance(address);
-  return hre.ethers.formatEther(balance)
+  const balance = await ethers.provider.getBalance(address);
+  return hre.ethers.utils.formatEther(balance)
   
 }
 async function printBalance(addresses: any[]) {
@@ -29,7 +31,7 @@ async function main() {
 
   const [owner, tipper, tripper, tripplet] = await hre.ethers.getSigners();
 
-  const buymeCoffee = await hre.ethers.getContractFactory("Coffee");
+  const buymeCoffee = await ethers.getContractFactory("Coffee");
   const buyCoffee = await buymeCoffee.deploy();
 
   await buyCoffee.deployed();
@@ -39,7 +41,28 @@ async function main() {
   console.log("---BUYING---")
   await printBalance(addresses)
 
-  const tip 
+  const tip = {value: ethers.utils.parseEther("1")};
+  await buyCoffee.connect(tripper).buyCoffee("Kolapo", "Amazing Womanizer and Programmer", tip);
+  await buyCoffee.connect(tripplet).buyCoffee("Kay", "You know what hs is capable of doing, A mafia", tip);
+  await buyCoffee.connect(tipper).buyCoffee("Funke", "You're the best!, I always love you.", tip);
+
+  console.log("== bought coffee ==");
+  await printBalance(addresses);
+
+  await buyCoffee.connect(owner).withdrawTips();
+
+  console.log("== Withdraw All Tips ==");
+  await printBalance(addresses);
+
+  // Check out the List of Buyers.
+  console.log("== Info  ==");
+  const info = await buyCoffee.getBuyers();
+  printOrders(info);
+
+
+  // const info = await buyCoffee.getBuyers();
+  // printOrders(info);
+
 
 }
 

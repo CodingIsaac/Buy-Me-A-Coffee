@@ -53,7 +53,7 @@ contract Coffee {
     }
 
     // Function to get total buyers balance
-    function getBuyers() private view onlyOwner returns (BuyInfo[] memory) {
+    function getBuyers() public view onlyOwner returns (BuyInfo[] memory) {
         return info;
     }
 
